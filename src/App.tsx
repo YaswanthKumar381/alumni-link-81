@@ -9,6 +9,10 @@ import Discussions from "./pages/Discussions";
 import Clubs from "./pages/Clubs";
 import Events from "./pages/Events";
 import Alumni from "./pages/Alumni";
+import Login from "./pages/auth/Login";
+import Signup from "./pages/auth/Signup";
+import Profile from "./pages/profile/Profile";
+import AdminPanel from "./pages/admin/AdminPanel";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +29,10 @@ const App = () => (
           <Route path="/clubs" element={<Clubs />} />
           <Route path="/events" element={<Events />} />
           <Route path="/alumni" element={<Alumni />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/admin" element={<AdminPanel />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
