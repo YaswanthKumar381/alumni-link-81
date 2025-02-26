@@ -34,6 +34,7 @@ type Chat = {
   role: "student" | "alumni" | "teacher";
 };
 
+// Mock data for chats
 const initialChats: Chat[] = [
   {
     id: "1",
@@ -152,8 +153,6 @@ const Chatrooms = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const location = useLocation();
-
-  const activeChat = chats.find((chat) => chat.id === activeChatId);
 
   useEffect(() => {
     // Handle incoming chat navigation
