@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "@/components/AuthLayout";
@@ -18,8 +19,13 @@ const Signup = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleRoleSelect = (e: React.MouseEvent<HTMLButtonElement>, selectedRole: UserRole) => {
     e.preventDefault();
+    setRole(selectedRole);
+  };
+
+  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // Crucial: prevent form submission
     
     if (password !== confirmPassword) {
       toast({
@@ -32,14 +38,7 @@ const Signup = () => {
 
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      // For demo, we'll just simulate a successful registration
-      toast({
-        title: "Account created successfully",
-        description: `Welcome to RGUKT Connect, ${firstName}!`,
-      });
-      
+    try {
       // Store user in localStorage for demo
       localStorage.setItem("authUser", JSON.stringify({
         email,
@@ -48,19 +47,34 @@ const Signup = () => {
         isAuthenticated: true
       }));
       
-      // Use navigate instead of directly manipulating window.location
-      if (role === "admin") {
-        navigate("/admin");
-      } else if (role === "teacher") {
-        navigate("/timetable");
-      } else if (role === "alumni") {
-        navigate("/you-at-rgukt");
-      } else {
-        navigate("/discussions");
+      toast({
+        title: "Account created successfully",
+        description: `Welcome to RGUKT Connect, ${firstName}!`,
+      });
+
+      // Navigate based on role
+      switch (role) {
+        case "admin":
+          navigate("/admin");
+          break;
+        case "teacher":
+          navigate("/timetable");
+          break;
+        case "alumni":
+          navigate("/you-at-rgukt");
+          break;
+        default:
+          navigate("/discussions");
       }
-      
+    } catch (error) {
+      toast({
+        title: "Error creating account",
+        description: "An error occurred while creating your account. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -75,47 +89,47 @@ const Signup = () => {
           <div className="grid grid-cols-4 gap-2">
             <button
               type="button"
+              onClick={(e) => handleRoleSelect(e, "student")}
               className={`p-3 rounded-lg border flex flex-col items-center gap-2 transition-colors ${
                 role === "student" ? "bg-primary/10 border-primary" : ""
               }`}
-              onClick={() => setRole("student")}
             >
               <GraduationCap className={`h-6 w-6 ${role === "student" ? "text-primary" : "text-gray-500"}`} />
               <span className="text-sm">Student</span>
             </button>
             <button
               type="button"
+              onClick={(e) => handleRoleSelect(e, "teacher")}
               className={`p-3 rounded-lg border flex flex-col items-center gap-2 transition-colors ${
                 role === "teacher" ? "bg-primary/10 border-primary" : ""
               }`}
-              onClick={() => setRole("teacher")}
             >
               <User className={`h-6 w-6 ${role === "teacher" ? "text-primary" : "text-gray-500"}`} />
               <span className="text-sm">Teacher</span>
             </button>
             <button
               type="button"
+              onClick={(e) => handleRoleSelect(e, "admin")}
               className={`p-3 rounded-lg border flex flex-col items-center gap-2 transition-colors ${
                 role === "admin" ? "bg-primary/10 border-primary" : ""
               }`}
-              onClick={() => setRole("admin")}
             >
               <Shield className={`h-6 w-6 ${role === "admin" ? "text-primary" : "text-gray-500"}`} />
               <span className="text-sm">Admin</span>
             </button>
             <button
               type="button"
+              onClick={(e) => handleRoleSelect(e, "alumni")}
               className={`p-3 rounded-lg border flex flex-col items-center gap-2 transition-colors ${
                 role === "alumni" ? "bg-primary/10 border-primary" : ""
               }`}
-              onClick={() => setRole("alumni")}
             >
               <BookOpen className={`h-6 w-6 ${role === "alumni" ? "text-primary" : "text-gray-500"}`} />
               <span className="text-sm">Alumni</span>
             </button>
           </div>
           
-          <form className="space-y-4" onSubmit={handleSignup}>
+          <form onSubmit={handleSignup} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-1" htmlFor="firstName">
