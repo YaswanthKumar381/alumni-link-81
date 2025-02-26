@@ -32,7 +32,8 @@ const Navbar = () => {
     }
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent default action
     localStorage.removeItem("authUser");
     setIsAuthenticated(false);
     setUserRole(null);
@@ -42,10 +43,7 @@ const Navbar = () => {
       description: "You have been logged out of your account",
     });
     
-    // Explicitly navigate to the root path for the landing page
-    navigate("/");
-    // Force reload to ensure all authenticated states are cleared
-    window.location.reload();
+    navigate("/"); // Use navigate for programmatic navigation
   };
 
   return (
@@ -95,12 +93,12 @@ const Navbar = () => {
           </div>
         ) : (
           <div className="flex items-center gap-4">
-            <Button variant="outline" onClick={() => navigate("/login")}>
-              Login
-            </Button>
-            <Button onClick={() => navigate("/signup")}>
-              Sign Up
-            </Button>
+            <Link to="/login">
+              <Button variant="outline">Login</Button>
+            </Link>
+            <Link to="/signup">
+              <Button>Sign Up</Button>
+            </Link>
           </div>
         )}
       </div>

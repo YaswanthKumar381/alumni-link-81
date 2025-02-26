@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "@/components/AuthLayout";
@@ -49,15 +48,14 @@ const Signup = () => {
         isAuthenticated: true
       }));
       
-      // Redirect based on role
+      // Use navigate instead of directly manipulating window.location
       if (role === "admin") {
         navigate("/admin");
       } else if (role === "teacher") {
         navigate("/timetable");
       } else if (role === "alumni") {
-        navigate("/alumni");
+        navigate("/you-at-rgukt");
       } else {
-        // Student
         navigate("/discussions");
       }
       
