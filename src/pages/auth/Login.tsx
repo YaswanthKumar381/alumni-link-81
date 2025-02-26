@@ -21,49 +21,46 @@ const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      const user = dummyUsers.find(
-        (user) => user.email === email && user.password === password
-      );
+    const user = dummyUsers.find(
+      (user) => user.email === email && user.password === password
+    );
 
-      if (user) {
-        // Store user role in localStorage for demo purposes
-        localStorage.setItem("authUser", JSON.stringify({
-          email: user.email,
-          role: user.role,
-          isAuthenticated: true
-        }));
+    if (user) {
+      // Store user role in localStorage
+      localStorage.setItem("authUser", JSON.stringify({
+        email: user.email,
+        role: user.role,
+        isAuthenticated: true
+      }));
 
-        toast({
-          title: "Login successful",
-          description: `Welcome back, ${user.role}!`,
-        });
+      toast({
+        title: "Login successful",
+        description: `Welcome back, ${user.role}!`,
+      });
 
-        // Redirect based on role
-        if (user.role === "admin") {
-          navigate("/admin");
-        } else if (user.role === "teacher") {
-          navigate("/timetable");
-        } else if (user.role === "alumni") {
-          navigate("/alumni");
-        } else {
-          // Student
-          navigate("/discussions");
-        }
-      } else {
-        toast({
-          title: "Login failed",
-          description: "Invalid email or password. Try again.",
-          variant: "destructive",
-        });
-      }
+      // Navigate based on role
+      const route = user.role === "admin" 
+        ? "/admin"
+        : user.role === "teacher"
+        ? "/timetable"
+        : user.role === "alumni"
+        ? "/alumni"
+        : "/discussions";
+
       setIsLoading(false);
-    }, 1000);
+      navigate(route, { replace: true });
+    } else {
+      toast({
+        title: "Login failed",
+        description: "Invalid email or password. Try again.",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -104,9 +101,9 @@ const Login = () => {
               />
             </div>
             <div className="text-sm text-right">
-              <a href="#" className="text-primary hover:underline">
+              <Link to="#" className="text-primary hover:underline">
                 Forgot password?
-              </a>
+              </Link>
             </div>
             <Button
               type="submit"
@@ -138,3 +135,4 @@ const Login = () => {
 };
 
 export default Login;
+
