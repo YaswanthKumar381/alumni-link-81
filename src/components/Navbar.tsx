@@ -42,7 +42,10 @@ const Navbar = () => {
       description: "You have been logged out of your account",
     });
     
+    // Explicitly navigate to the root path for the landing page
     navigate("/");
+    // Force reload to ensure all authenticated states are cleared
+    window.location.reload();
   };
 
   return (
@@ -59,9 +62,9 @@ const Navbar = () => {
             <button className="rounded-full p-2 hover:bg-secondary transition-colors">
               <Bell className="h-5 w-5 text-foreground" />
             </button>
-            <button className="rounded-full p-2 hover:bg-secondary transition-colors">
+            <Link to="/chatbot" className="rounded-full p-2 hover:bg-secondary transition-colors">
               <MessageCircle className="h-5 w-5 text-foreground" />
-            </button>
+            </Link>
             
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

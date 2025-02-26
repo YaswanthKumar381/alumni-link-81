@@ -1,5 +1,5 @@
 
-import { Briefcase, Calendar, ChevronDown, FileText, GraduationCap, LayoutDashboard, MessageCircle, TableProperties, Users, Network, Presentation, BookOpen, UserPlus } from "lucide-react";
+import { Briefcase, Calendar, ChevronDown, FileText, GraduationCap, LayoutDashboard, MessageCircle, TableProperties, Users, Network, Presentation, BookOpen, UserPlus, Bot } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 
@@ -14,6 +14,7 @@ const studentMenuItems = [
   { icon: TableProperties, label: "Timetable", path: "/timetable" },
   { icon: FileText, label: "Announcements", path: "/announcements" },
   { icon: UserPlus, label: "Connections", path: "/connections" },
+  { icon: Bot, label: "Chatbot", path: "/chatbot" },
 ];
 
 const teacherMenuItems = [
@@ -21,12 +22,14 @@ const teacherMenuItems = [
   { icon: TableProperties, label: "Timetable", path: "/timetable" },
   { icon: Calendar, label: "Events", path: "/events" },
   { icon: Users, label: "Clubs", path: "/clubs" },
+  { icon: Bot, label: "Chatbot", path: "/chatbot" },
 ];
 
 const adminMenuItems = [
   { icon: LayoutDashboard, label: "Admin Dashboard", path: "/admin" },
   { icon: FileText, label: "Announcements", path: "/announcements" },
   { icon: Users, label: "Clubs", path: "/clubs" },
+  { icon: Bot, label: "Chatbot Admin", path: "/admin/chatbot" },
 ];
 
 const alumniMenuItems = [
@@ -37,6 +40,7 @@ const alumniMenuItems = [
   { icon: Presentation, label: "Guest Talks", path: "/guest-talks" },
   { icon: Briefcase, label: "Job Referrals", path: "/job-referrals" },
   { icon: UserPlus, label: "Connections", path: "/connections" },
+  { icon: Bot, label: "Chatbot", path: "/chatbot" },
 ];
 
 const Sidebar = () => {

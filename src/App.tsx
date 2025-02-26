@@ -14,6 +14,7 @@ import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import Profile from "./pages/profile/Profile";
 import AdminPanel from "./pages/admin/AdminPanel";
+import ChatbotAdmin from "./pages/admin/ChatbotAdmin";
 import Announcements from "./pages/announcements/Announcements";
 import Chatrooms from "./pages/chatrooms/Chatrooms";
 import Timetable from "./pages/timetable/Timetable";
@@ -25,6 +26,7 @@ import AlumniDirectory from "./pages/alumni/AlumniDirectory";
 import NetworkingPortal from "./pages/alumni/NetworkingPortal";
 import GuestTalks from "./pages/alumni/GuestTalks";
 import JobReferrals from "./pages/alumni/JobReferrals";
+import Chatbot from "./pages/chatbot/Chatbot";
 import { useEffect, useState } from "react";
 
 const queryClient = new QueryClient();
@@ -94,6 +96,7 @@ const App = () => {
             <Route path="/profile" element={<ProtectedRoute element={<Profile />} />} />
             <Route path="/discussions" element={<ProtectedRoute element={<Discussions />} />} />
             <Route path="/connections" element={<ProtectedRoute element={<Connections />} />} />
+            <Route path="/chatbot" element={<ProtectedRoute element={<Chatbot />} />} />
             
             {/* Student & Teacher routes */}
             <Route path="/clubs" element={<ProtectedRoute element={<Clubs />} />} />
@@ -144,6 +147,10 @@ const App = () => {
             <Route 
               path="/admin" 
               element={<ProtectedRoute element={<AdminPanel />} requiredRole="admin" />} 
+            />
+            <Route 
+              path="/admin/chatbot" 
+              element={<ProtectedRoute element={<ChatbotAdmin />} requiredRole="admin" />} 
             />
             
             {/* Catch-all route */}
