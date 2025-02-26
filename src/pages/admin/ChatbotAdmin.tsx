@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MainLayout from "@/components/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +22,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { 
@@ -33,7 +40,9 @@ import {
   Edit, 
   Plus, 
   Save, 
-  Database 
+  Database,
+  MessageCircle,
+  Settings 
 } from "lucide-react";
 
 type Document = {
@@ -86,12 +95,47 @@ const ChatbotAdmin = () => {
       updatedAt: new Date("2023-09-02"),
     },
   ]);
+  
+  // Chatbot persona configuration
+  const [persona, setPersona] = useState<string>("helpful");
+  const [tone, setTone] = useState<string>("professional");
+  const [botName, setBotName] = useState<string>("RGUKT Assistant");
+  const [botDescription, setBotDescription] = useState<string>("Your helpful university assistant.");
 
   const [newQuestion, setNewQuestion] = useState("");
   const [newAnswer, setNewAnswer] = useState("");
   const [editingQA, setEditingQA] = useState<QA | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
+
+  // Load chatbot settings from localStorage on component mount
+  useEffect(() => {
+    const savedSettings = localStorage.getItem("chatbotSettings");
+    if (savedSettings) {
+      const settings = JSON.parse(savedSettings);
+      setPersona(settings.persona || "helpful");
+      setTone(settings.tone || "professional");
+      setBotName(settings.botName || "RGUKT Assistant");
+      setBotDescription(settings.botDescription || "Your helpful university assistant.");
+    }
+  }, []);
+
+  // Save chatbot settings to localStorage
+  const saveChatbotSettings = () => {
+    const settings = {
+      persona,
+      tone,
+      botName,
+      botDescription
+    };
+    
+    localStorage.setItem("chatbotSettings", JSON.stringify(settings));
+    
+    toast({
+      title: "Settings saved",
+      description: "Chatbot settings have been updated successfully.",
+    });
+  };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -189,7 +233,7 @@ const ChatbotAdmin = () => {
           <div>
             <h1 className="text-3xl font-bold">Chatbot Knowledge Base</h1>
             <p className="text-gray-600">
-              Manage the documents and Q&A that power your university chatbot
+              Manage the documents, Q&A, and personality of your university chatbot
             </p>
           </div>
           <div className="flex items-center space-x-2">
@@ -201,7 +245,7 @@ const ChatbotAdmin = () => {
         </div>
 
         <Tabs defaultValue="documents" className="w-full">
-          <TabsList className="grid w-full md:w-[400px] grid-cols-2">
+          <TabsList className="grid w-full md:w-[600px] grid-cols-3">
             <TabsTrigger value="documents">
               <FileText className="mr-2 h-4 w-4" />
               Documents
@@ -209,6 +253,10 @@ const ChatbotAdmin = () => {
             <TabsTrigger value="qa">
               <FileQuestion className="mr-2 h-4 w-4" />
               Q&A Pairs
+            </TabsTrigger>
+            <TabsTrigger value="settings">
+              <Settings className="mr-2 h-4 w-4" />
+              Chatbot Settings
             </TabsTrigger>
           </TabsList>
 
@@ -418,6 +466,106 @@ const ChatbotAdmin = () => {
                       </div>
                     ))
                   )}
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="settings" className="mt-6">
+            <div className="rounded-lg border bg-card">
+              <div className="p-6 flex flex-col gap-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-semibold">Chatbot Personality Settings</h2>
+                  <Button onClick={saveChatbotSettings} className="flex-shrink-0">
+                    <Save className="mr-2 h-4 w-4" />
+                    Save Settings
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="botName">Chatbot Name</Label>
+                      <Input
+                        id="botName"
+                        value={botName}
+                        onChange={(e) => setBotName(e.target.value)}
+                        placeholder="RGUKT Assistant"
+                        className="mt-1"
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="botDescription">Bot Description</Label>
+                      <Textarea
+                        id="botDescription"
+                        value={botDescription}
+                        onChange={(e) => setBotDescription(e.target.value)}
+                        placeholder="Your helpful university assistant."
+                        className="mt-1"
+                        rows={3}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="persona">Chatbot Persona</Label>
+                      <Select value={persona} onValueChange={setPersona}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="Select a persona" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="helpful">Helpful Assistant</SelectItem>
+                          <SelectItem value="mentor">Academic Mentor</SelectItem>
+                          <SelectItem value="friend">Friendly Companion</SelectItem>
+                          <SelectItem value="expert">University Expert</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <p className="text-xs text-gray-500 mt-1">
+                        How should the chatbot present itself to users?
+                      </p>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="tone">Conversation Tone</Label>
+                      <Select value={tone} onValueChange={setTone}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="Select a tone" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="professional">Professional</SelectItem>
+                          <SelectItem value="friendly">Friendly</SelectItem>
+                          <SelectItem value="casual">Casual</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <p className="text-xs text-gray-500 mt-1">
+                        How formal or casual should the chatbot's responses be?
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gray-50 p-4 rounded-lg border mt-4">
+                  <h3 className="font-medium mb-2 flex items-center">
+                    <MessageCircle className="h-4 w-4 mr-2" />
+                    Preview
+                  </h3>
+                  <div className="p-4 bg-white rounded-lg border">
+                    <div className="flex items-start space-x-2">
+                      <Bot className="h-5 w-5 mt-1 text-primary" />
+                      <div>
+                        <p className="text-sm font-medium">{botName}</p>
+                        <p className="text-xs text-gray-500">{botDescription}</p>
+                        <p className="text-sm mt-2">
+                          {persona === "mentor" && "As your academic mentor, I'd suggest checking your class schedule for any changes this week."}
+                          {persona === "friend" && "Hey there! Don't forget to check out the campus event happening this weekend!"}
+                          {persona === "expert" && "Based on university policy, all assignment submissions are due by 11:59 PM on the due date."}
+                          {persona === "helpful" && "I'm here to assist you with any questions about classes, events, or campus resources."}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
