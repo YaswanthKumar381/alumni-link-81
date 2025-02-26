@@ -131,33 +131,6 @@ const Login = () => {
               </Link>
             </p>
           </div>
-          <div className="border-t pt-4 mt-4">
-            <p className="text-xs text-center text-gray-500">
-              Demo Accounts:
-            </p>
-            <div className="grid grid-cols-4 gap-2 mt-2 text-xs">
-              <div className="border rounded p-2">
-                <p className="font-semibold">Student</p>
-                <p>student@rgukt.ac.in</p>
-                <p>student123</p>
-              </div>
-              <div className="border rounded p-2">
-                <p className="font-semibold">Teacher</p>
-                <p>teacher@rgukt.ac.in</p>
-                <p>teacher123</p>
-              </div>
-              <div className="border rounded p-2">
-                <p className="font-semibold">Admin</p>
-                <p>admin@rgukt.ac.in</p>
-                <p>admin123</p>
-              </div>
-              <div className="border rounded p-2">
-                <p className="font-semibold">Alumni</p>
-                <p>alumni@rgukt.ac.in</p>
-                <p>alumni123</p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </AuthLayout>
