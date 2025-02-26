@@ -42,7 +42,8 @@ import {
   Save, 
   Database,
   MessageCircle,
-  Settings 
+  Settings,
+  Bot 
 } from "lucide-react";
 
 type Document = {

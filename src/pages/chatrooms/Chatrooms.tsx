@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import MainLayout from "@/components/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { SendHorizontal, User, Plus, Search, Phone, Video, MoreVertical, Image, Paperclip, Smile } from "lucide-react";
+import { SendHorizontal, User, Plus, Search, Phone, Video, MoreVertical, Image, Paperclip, Smile, MessageCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { 
   DropdownMenu,
