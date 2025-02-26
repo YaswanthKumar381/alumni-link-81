@@ -41,7 +41,18 @@ const Discussions = () => {
 
       if (error) throw error;
 
-      setDiscussions(data || []);
+      // Transform the data to match our Discussion interface
+      const transformedData: Discussion[] = (data || []).map(item => ({
+        id: item.id,
+        title: item.title,
+        content: item.content,
+        category: item.category,
+        profiles: item.profiles,
+        discussion_replies_count: item.discussion_replies?.[0]?.count || 0,
+        discussion_likes_count: item.discussion_likes?.[0]?.count || 0
+      }));
+
+      setDiscussions(transformedData);
     } catch (error: any) {
       toast({
         title: "Error loading discussions",
