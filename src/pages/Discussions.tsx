@@ -1,129 +1,38 @@
 
-import { useState, useEffect } from "react";
 import MainLayout from "@/components/MainLayout";
 import { MessageCircle, ThumbsUp, MessageSquare, Share2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
 
-interface Discussion {
-  id: string;
-  title: string;
-  content: string;
-  category: string;
-  profiles: {
-    username: string;
-  } | null;
-  discussion_replies_count: number;
-  discussion_likes_count: number;
-}
+const discussions = [
+  {
+    id: 1,
+    title: "Academic Research Methods in Computer Science",
+    author: "Dr. Sarah Johnson",
+    category: "Academic",
+    replies: 23,
+    likes: 45,
+    preview: "Looking for study partners for upcoming Algorithm exam...",
+  },
+  {
+    id: 2,
+    title: "Campus Cultural Festival Planning",
+    author: "Student Council",
+    category: "Events",
+    replies: 56,
+    likes: 89,
+    preview: "Share your ideas for this year's cultural festival theme...",
+  },
+  {
+    id: 3,
+    title: "Internship Opportunities Summer 2024",
+    author: "Career Cell",
+    category: "Career",
+    replies: 34,
+    likes: 67,
+    preview: "New internship openings at leading tech companies...",
+  },
+];
 
 const Discussions = () => {
-  const [discussions, setDiscussions] = useState<Discussion[]>([]);
-  const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    fetchDiscussions();
-    setupRealtimeSubscription();
-  }, []);
-
-  const fetchDiscussions = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('discussions')
-        .select(`
-          *,
-          profiles:author_id (*),
-          discussion_replies(count),
-          discussion_likes(count)
-        `)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      // Transform the data to match our Discussion interface
-      const transformedData: Discussion[] = (data || []).map(item => ({
-        id: item.id,
-        title: item.title,
-        content: item.content,
-        category: item.category,
-        profiles: item.profiles,
-        discussion_replies_count: item.discussion_replies?.[0]?.count || 0,
-        discussion_likes_count: item.discussion_likes?.[0]?.count || 0
-      }));
-
-      setDiscussions(transformedData);
-    } catch (error: any) {
-      toast({
-        title: "Error loading discussions",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const setupRealtimeSubscription = () => {
-    const channel = supabase
-      .channel('public:discussions')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'discussions' },
-        (payload) => {
-          console.log('Change received!', payload);
-          fetchDiscussions();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  };
-
-  const handleLike = async (discussionId: string) => {
-    try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) {
-        toast({
-          title: "Authentication required",
-          description: "Please login to like discussions",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const { data: existingLike } = await supabase
-        .from('discussion_likes')
-        .select('id')
-        .match({ discussion_id: discussionId, user_id: user.id })
-        .single();
-
-      if (existingLike) {
-        await supabase
-          .from('discussion_likes')
-          .delete()
-          .match({ id: existingLike.id });
-      } else {
-        await supabase
-          .from('discussion_likes')
-          .insert({ discussion_id: discussionId, user_id: user.id });
-      }
-
-      fetchDiscussions();
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
-  };
-
   return (
     <MainLayout>
       <div className="space-y-6 animate-fade-up">
@@ -137,50 +46,41 @@ const Discussions = () => {
           </button>
         </header>
 
-        {isLoading ? (
-          <div className="flex items-center justify-center h-48">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          </div>
-        ) : (
-          <div className="grid gap-4">
-            {discussions.map((discussion) => (
-              <div
-                key={discussion.id}
-                className="rounded-lg border bg-white p-6 shadow-sm hover:shadow-md transition-shadow"
-              >
-                <div className="space-y-4">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-semibold text-lg text-foreground">
-                        {discussion.title}
-                      </h3>
-                      <p className="text-sm text-foreground/60">
-                        Posted by {discussion.profiles?.username || 'Anonymous'} • {discussion.category}
-                      </p>
-                    </div>
-                    <button className="rounded-full p-2 hover:bg-secondary transition-colors">
-                      <Share2 className="h-5 w-5 text-foreground/60" />
-                    </button>
+        <div className="grid gap-4">
+          {discussions.map((discussion) => (
+            <div
+              key={discussion.id}
+              className="rounded-lg border bg-white p-6 shadow-sm hover:shadow-md transition-shadow"
+            >
+              <div className="space-y-4">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className="font-semibold text-lg text-foreground">
+                      {discussion.title}
+                    </h3>
+                    <p className="text-sm text-foreground/60">
+                      Posted by {discussion.author} • {discussion.category}
+                    </p>
                   </div>
-                  <p className="text-foreground/80">{discussion.content}</p>
-                  <div className="flex gap-4">
-                    <button className="flex items-center gap-2 text-sm text-foreground/60 hover:text-primary transition-colors">
-                      <MessageSquare className="h-4 w-4" />
-                      {discussion.discussion_replies_count || 0} Replies
-                    </button>
-                    <button
-                      onClick={() => handleLike(discussion.id)}
-                      className="flex items-center gap-2 text-sm text-foreground/60 hover:text-primary transition-colors"
-                    >
-                      <ThumbsUp className="h-4 w-4" />
-                      {discussion.discussion_likes_count || 0} Likes
-                    </button>
-                  </div>
+                  <button className="rounded-full p-2 hover:bg-secondary transition-colors">
+                    <Share2 className="h-5 w-5 text-foreground/60" />
+                  </button>
+                </div>
+                <p className="text-foreground/80">{discussion.preview}</p>
+                <div className="flex gap-4">
+                  <button className="flex items-center gap-2 text-sm text-foreground/60 hover:text-primary transition-colors">
+                    <MessageSquare className="h-4 w-4" />
+                    {discussion.replies} Replies
+                  </button>
+                  <button className="flex items-center gap-2 text-sm text-foreground/60 hover:text-primary transition-colors">
+                    <ThumbsUp className="h-4 w-4" />
+                    {discussion.likes} Likes
+                  </button>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
+            </div>
+          ))}
+        </div>
       </div>
     </MainLayout>
   );

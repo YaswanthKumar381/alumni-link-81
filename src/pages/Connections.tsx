@@ -1,20 +1,10 @@
+
 import { useState, useEffect } from "react";
 import MainLayout from "@/components/MainLayout";
 import { User, MessageCircle, UserCheck, UserPlus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-
-type Connection = {
-  id: number;
-  name: string;
-  role: string;
-  position: string;
-  avatarUrl: string | null;
-  connected: boolean;
-  pending?: boolean;
-};
 
 const connectionsMockData = [
   {
@@ -23,7 +13,7 @@ const connectionsMockData = [
     role: "Alumni",
     position: "Software Engineer at Google",
     avatarUrl: null,
-    connected: false,
+    connected: true,
   },
   {
     id: 2,
@@ -31,7 +21,7 @@ const connectionsMockData = [
     role: "Alumni",
     position: "Data Scientist at Microsoft",
     avatarUrl: null,
-    connected: false,
+    connected: true,
   },
   {
     id: 3,
@@ -47,7 +37,7 @@ const connectionsMockData = [
     role: "Student",
     position: "Final Year CSE",
     avatarUrl: null,
-    connected: false,
+    connected: true,
   },
   {
     id: 5,
@@ -67,6 +57,15 @@ const connectionsMockData = [
   },
 ];
 
+type Connection = {
+  id: number;
+  name: string;
+  role: string;
+  position: string;
+  avatarUrl: string | null;
+  connected: boolean;
+};
+
 const Connections = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [connections, setConnections] = useState<Connection[]>([]);
@@ -79,40 +78,17 @@ const Connections = () => {
     setConnections(connectionsMockData);
   }, []);
 
-  const handleConnect = async (id: number) => {
-    try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+  const handleConnect = (id: number) => {
+    setConnections((prev) =>
+      prev.map((connection) =>
+        connection.id === id ? { ...connection, connected: true } : connection
+      )
+    );
 
-      if (!user) {
-        toast({
-          title: "Authentication required",
-          description: "Please login to connect with others",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Update local state to show pending
-      setConnections((prev) =>
-        prev.map((connection) =>
-          connection.id === id ? { ...connection, pending: true } : connection
-        )
-      );
-
-      // In a real app, this would create a connection request in the database
-      toast({
-        title: "Request sent",
-        description: "Your connection request has been sent",
-      });
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
+    toast({
+      title: "Connection request sent",
+      description: "They will be notified of your request.",
+    });
   };
 
   const handleMessage = (name: string) => {
@@ -121,6 +97,11 @@ const Connections = () => {
       state: { 
         activeChat: name 
       }
+    });
+    
+    toast({
+      title: "Opening chat",
+      description: `Opening chat with ${name}`,
     });
   };
 
@@ -219,11 +200,6 @@ const Connections = () => {
                         Connected
                       </Button>
                     </>
-                  ) : connection.pending ? (
-                    <Button variant="secondary" className="w-full" disabled>
-                      <UserPlus className="h-4 w-4 mr-2" />
-                      Request Sent
-                    </Button>
                   ) : (
                     <Button
                       className="w-full"
