@@ -20,6 +20,9 @@ export default {
     },
     extend: {
       colors: {
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
         primary: {
           DEFAULT: "#4A90E2",
           foreground: "#FFFFFF",
