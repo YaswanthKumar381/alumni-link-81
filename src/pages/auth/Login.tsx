@@ -5,14 +5,7 @@ import AuthLayout from "@/components/AuthLayout";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { LogIn } from "lucide-react";
-
-// Dummy users for authentication
-const dummyUsers = [
-  { email: "student@rgukt.ac.in", password: "student123", role: "student" },
-  { email: "teacher@rgukt.ac.in", password: "teacher123", role: "teacher" },
-  { email: "admin@rgukt.ac.in", password: "admin123", role: "admin" },
-  { email: "alumni@rgukt.ac.in", password: "alumni123", role: "alumni" },
-];
+import { supabase } from "@/integrations/supabase/client";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -21,52 +14,59 @@ const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    e.stopPropagation(); // Add this to ensure event doesn't bubble up
     setIsLoading(true);
 
-    const user = dummyUsers.find(
-      (user) => user.email === email && user.password === password
-    );
+    try {
+      const { data: { user }, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
 
-    if (user) {
-      // Store user role in localStorage
-      localStorage.setItem("authUser", JSON.stringify({
-        email: user.email,
-        role: user.role,
-        isAuthenticated: true
-      }));
+      if (error) throw error;
 
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role, username, full_name')
+          .eq('id', user.id)
+          .single();
+
+        localStorage.setItem("authUser", JSON.stringify({
+          email: user.email,
+          role: profile?.role || 'student',
+          name: profile?.full_name || email.split('@')[0],
+          isAuthenticated: true
+        }));
+
+        toast({
+          title: "Login successful",
+          description: `Welcome back, ${profile?.username || email.split('@')[0]}!`,
+        });
+
+        const route = profile?.role === "admin" 
+          ? "/admin"
+          : profile?.role === "teacher"
+          ? "/timetable"
+          : profile?.role === "alumni"
+          ? "/alumni"
+          : "/discussions";
+
+        navigate(route, { 
+          replace: true,
+          state: { from: "login" }
+        });
+      }
+    } catch (error: any) {
       toast({
-        title: "Login successful",
-        description: `Welcome back, ${user.role}!`,
+        title: "Login failed",
+        description: error.message || "Invalid email or password. Try again.",
+        variant: "destructive",
       });
-
-      // Navigate based on role with state to prevent page reload
-      const route = user.role === "admin" 
-        ? "/admin"
-        : user.role === "teacher"
-        ? "/timetable"
-        : user.role === "alumni"
-        ? "/alumni"
-        : "/discussions";
-
+    } finally {
       setIsLoading(false);
-      // Use replace and state to prevent page reload
-      navigate(route, { 
-        replace: true,
-        state: { from: "login" }
-      });
-      return;
     }
-
-    toast({
-      title: "Login failed",
-      description: "Invalid email or password. Try again.",
-      variant: "destructive",
-    });
-    setIsLoading(false);
   };
 
   return (
