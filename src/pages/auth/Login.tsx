@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import AuthLayout from "@/components/AuthLayout";
@@ -15,7 +14,7 @@ const Login = () => {
   const { toast } = useToast();
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent form submission
     setIsLoading(true);
 
     try {
@@ -48,18 +47,8 @@ const Login = () => {
           description: `Welcome back, ${profile?.username || defaultName}!`,
         });
 
-        const route = profile?.role === "admin" 
-          ? "/admin"
-          : profile?.role === "teacher"
-          ? "/timetable"
-          : profile?.role === "alumni"
-          ? "/alumni"
-          : "/discussions";
-
-        navigate(route, { 
-          replace: true,
-          state: { from: "login" }
-        });
+        // Redirect to the appropriate page based on role
+        navigate("/discussions", { replace: true });
       }
     } catch (error: any) {
       toast({
