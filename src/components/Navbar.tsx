@@ -77,4 +77,32 @@ const Navbar = () => {
                   {userRole && <p className="text-xs text-muted-foreground">{userRole}</p>}
                 </div>
                 <DropdownMenuSeparator />
-                <Dropdown
+                <DropdownMenuItem asChild>
+                  <Link to="/profile" className="cursor-pointer flex w-full items-center">
+                    <User className="mr-2 h-4 w-4" />
+                    Profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive focus:text-destructive">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        ) : (
+          <div className="flex items-center gap-4">
+            <Button variant="outline" onClick={() => navigate("/login")}>
+              Login
+            </Button>
+            <Button onClick={() => navigate("/signup")}>
+              Sign Up
+            </Button>
+          </div>
+        )}
+      </div>
+    </nav>
+  );
+};
+
+export default Navbar;
