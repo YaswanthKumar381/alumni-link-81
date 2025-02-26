@@ -5,15 +5,16 @@ import Sidebar from "./Sidebar";
 
 interface MainLayoutProps {
   children: ReactNode;
+  showSidebar?: boolean;
 }
 
-const MainLayout: FC<MainLayoutProps> = ({ children }) => {
+const MainLayout: FC<MainLayoutProps> = ({ children, showSidebar = true }) => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container flex gap-6 pt-6">
-        <Sidebar />
-        <main className="flex-1 pb-8 animate-fade-in">{children}</main>
+        {showSidebar && <Sidebar />}
+        <main className={`${showSidebar ? "flex-1" : "w-full"} pb-8 animate-fade-in`}>{children}</main>
       </div>
     </div>
   );

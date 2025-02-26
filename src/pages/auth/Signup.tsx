@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import MainLayout from "@/components/MainLayout";
+import AuthLayout from "@/components/AuthLayout";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { GraduationCap, Shield, User } from "lucide-react";
@@ -57,7 +57,7 @@ const Signup = () => {
   };
 
   return (
-    <MainLayout>
+    <AuthLayout>
       <div className="min-h-screen flex items-center justify-center">
         <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-lg">
           <div className="text-center">
@@ -189,7 +189,7 @@ const Signup = () => {
           </div>
         </div>
       </div>
-    </MainLayout>
+    </AuthLayout>
   );
 };
 
