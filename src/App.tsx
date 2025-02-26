@@ -19,6 +19,12 @@ import Chatrooms from "./pages/chatrooms/Chatrooms";
 import Timetable from "./pages/timetable/Timetable";
 import Careers from "./pages/Careers";
 import NotFound from "./pages/NotFound";
+import Connections from "./pages/Connections";
+import YouAtRgukt from "./pages/alumni/YouAtRgukt";
+import AlumniDirectory from "./pages/alumni/AlumniDirectory";
+import NetworkingPortal from "./pages/alumni/NetworkingPortal";
+import GuestTalks from "./pages/alumni/GuestTalks";
+import JobReferrals from "./pages/alumni/JobReferrals";
 import { useEffect, useState } from "react";
 
 const queryClient = new QueryClient();
@@ -29,7 +35,7 @@ const ProtectedRoute = ({
   requiredRole = null 
 }: { 
   element: JSX.Element, 
-  requiredRole?: "student" | "teacher" | "admin" | null 
+  requiredRole?: "student" | "teacher" | "admin" | "alumni" | null 
 }) => {
   const authUser = localStorage.getItem("authUser");
   
@@ -87,6 +93,7 @@ const App = () => {
             {/* Protected routes - All users */}
             <Route path="/profile" element={<ProtectedRoute element={<Profile />} />} />
             <Route path="/discussions" element={<ProtectedRoute element={<Discussions />} />} />
+            <Route path="/connections" element={<ProtectedRoute element={<Connections />} />} />
             
             {/* Student & Teacher routes */}
             <Route path="/clubs" element={<ProtectedRoute element={<Clubs />} />} />
@@ -109,6 +116,28 @@ const App = () => {
             <Route 
               path="/announcements" 
               element={<ProtectedRoute element={<Announcements />} />} 
+            />
+            
+            {/* Alumni-only routes */}
+            <Route 
+              path="/you-at-rgukt" 
+              element={<ProtectedRoute element={<YouAtRgukt />} requiredRole="alumni" />} 
+            />
+            <Route 
+              path="/alumni-directory" 
+              element={<ProtectedRoute element={<AlumniDirectory />} requiredRole="alumni" />} 
+            />
+            <Route 
+              path="/networking" 
+              element={<ProtectedRoute element={<NetworkingPortal />} requiredRole="alumni" />} 
+            />
+            <Route 
+              path="/guest-talks" 
+              element={<ProtectedRoute element={<GuestTalks />} requiredRole="alumni" />} 
+            />
+            <Route 
+              path="/job-referrals" 
+              element={<ProtectedRoute element={<JobReferrals />} requiredRole="alumni" />} 
             />
             
             {/* Admin-only routes */}

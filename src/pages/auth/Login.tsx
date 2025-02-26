@@ -11,6 +11,7 @@ const dummyUsers = [
   { email: "student@rgukt.ac.in", password: "student123", role: "student" },
   { email: "teacher@rgukt.ac.in", password: "teacher123", role: "teacher" },
   { email: "admin@rgukt.ac.in", password: "admin123", role: "admin" },
+  { email: "alumni@rgukt.ac.in", password: "alumni123", role: "alumni" },
 ];
 
 const Login = () => {
@@ -46,8 +47,13 @@ const Login = () => {
         // Redirect based on role
         if (user.role === "admin") {
           navigate("/admin");
+        } else if (user.role === "teacher") {
+          navigate("/timetable");
+        } else if (user.role === "alumni") {
+          navigate("/alumni");
         } else {
-          navigate("/");
+          // Student
+          navigate("/discussions");
         }
       } else {
         toast({
@@ -129,7 +135,7 @@ const Login = () => {
             <p className="text-xs text-center text-gray-500">
               Demo Accounts:
             </p>
-            <div className="grid grid-cols-3 gap-2 mt-2 text-xs">
+            <div className="grid grid-cols-4 gap-2 mt-2 text-xs">
               <div className="border rounded p-2">
                 <p className="font-semibold">Student</p>
                 <p>student@rgukt.ac.in</p>
@@ -144,6 +150,11 @@ const Login = () => {
                 <p className="font-semibold">Admin</p>
                 <p>admin@rgukt.ac.in</p>
                 <p>admin123</p>
+              </div>
+              <div className="border rounded p-2">
+                <p className="font-semibold">Alumni</p>
+                <p>alumni@rgukt.ac.in</p>
+                <p>alumni123</p>
               </div>
             </div>
           </div>

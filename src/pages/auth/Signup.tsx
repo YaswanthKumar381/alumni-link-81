@@ -4,9 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "@/components/AuthLayout";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { GraduationCap, Shield, User } from "lucide-react";
+import { GraduationCap, Shield, User, BookOpen } from "lucide-react";
 
-type UserRole = "student" | "teacher" | "admin";
+type UserRole = "student" | "teacher" | "admin" | "alumni";
 
 const Signup = () => {
   const [firstName, setFirstName] = useState("");
@@ -49,8 +49,17 @@ const Signup = () => {
         isAuthenticated: true
       }));
       
-      // Redirect to home
-      navigate("/");
+      // Redirect based on role
+      if (role === "admin") {
+        navigate("/admin");
+      } else if (role === "teacher") {
+        navigate("/timetable");
+      } else if (role === "alumni") {
+        navigate("/alumni");
+      } else {
+        // Student
+        navigate("/discussions");
+      }
       
       setIsLoading(false);
     }, 1500);
@@ -65,7 +74,7 @@ const Signup = () => {
             <p className="text-sm text-gray-600">Join the RGUKT community</p>
           </div>
           
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-4 gap-2">
             <button
               type="button"
               className={`p-3 rounded-lg border flex flex-col items-center gap-2 transition-colors ${
@@ -95,6 +104,16 @@ const Signup = () => {
             >
               <Shield className={`h-6 w-6 ${role === "admin" ? "text-primary" : "text-gray-500"}`} />
               <span className="text-sm">Admin</span>
+            </button>
+            <button
+              type="button"
+              className={`p-3 rounded-lg border flex flex-col items-center gap-2 transition-colors ${
+                role === "alumni" ? "bg-primary/10 border-primary" : ""
+              }`}
+              onClick={() => setRole("alumni")}
+            >
+              <BookOpen className={`h-6 w-6 ${role === "alumni" ? "text-primary" : "text-gray-500"}`} />
+              <span className="text-sm">Alumni</span>
             </button>
           </div>
           
