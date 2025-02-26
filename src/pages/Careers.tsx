@@ -1,6 +1,6 @@
 
-import { useState } from "react";
 import MainLayout from "@/components/MainLayout";
+import { useState } from "react";
 import { Bookmark, Briefcase, Building, Calendar, MapPin, Network, Search } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
