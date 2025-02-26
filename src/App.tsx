@@ -13,6 +13,9 @@ import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import Profile from "./pages/profile/Profile";
 import AdminPanel from "./pages/admin/AdminPanel";
+import Announcements from "./pages/announcements/Announcements";
+import Chatrooms from "./pages/chatrooms/Chatrooms";
+import Timetable from "./pages/timetable/Timetable";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +36,9 @@ const App = () => (
           <Route path="/signup" element={<Signup />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/announcements" element={<Announcements />} />
+          <Route path="/chatrooms" element={<Chatrooms />} />
+          <Route path="/timetable" element={<Timetable />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
