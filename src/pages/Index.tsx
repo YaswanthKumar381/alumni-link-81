@@ -1,6 +1,6 @@
 
 import MainLayout from "@/components/MainLayout";
-import { Calendar, MessageCircle, Users, Graduation } from "lucide-react";
+import { Calendar, MessageCircle, Users, GraduationCap } from "lucide-react";
 
 const features = [
   {
@@ -19,7 +19,7 @@ const features = [
     description: "Stay updated with university events and schedules",
   },
   {
-    icon: Graduation,
+    icon: GraduationCap,
     title: "Alumni Network",
     description: "Connect with alumni for mentorship and opportunities",
   },

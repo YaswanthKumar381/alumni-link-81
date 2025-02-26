@@ -1,12 +1,12 @@
 
-import { Calendar, Graduation, MessageCircle, Users } from "lucide-react";
+import { Calendar, GraduationCap, MessageCircle, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const menuItems = [
   { icon: MessageCircle, label: "Discussions", path: "/discussions" },
   { icon: Users, label: "Clubs", path: "/clubs" },
   { icon: Calendar, label: "Events", path: "/events" },
-  { icon: Graduation, label: "Alumni", path: "/alumni" },
+  { icon: GraduationCap, label: "Alumni", path: "/alumni" },
 ];
 
 const Sidebar = () => {
