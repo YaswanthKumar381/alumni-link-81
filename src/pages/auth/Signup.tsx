@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import MainLayout from "@/components/MainLayout";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { GraduationCap, Shield, UserTie } from "lucide-react";
+import { GraduationCap, Shield, User } from "lucide-react";
 
 type UserRole = "student" | "teacher" | "admin";
 
@@ -83,7 +83,7 @@ const Signup = () => {
               }`}
               onClick={() => setRole("teacher")}
             >
-              <UserTie className={`h-6 w-6 ${role === "teacher" ? "text-primary" : "text-gray-500"}`} />
+              <User className={`h-6 w-6 ${role === "teacher" ? "text-primary" : "text-gray-500"}`} />
               <span className="text-sm">Teacher</span>
             </button>
             <button
