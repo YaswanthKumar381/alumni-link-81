@@ -1,11 +1,12 @@
 
-import { Calendar, GraduationCap, MessageCircle, Users } from "lucide-react";
+import { Briefcase, Calendar, GraduationCap, MessageCircle, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const menuItems = [
   { icon: MessageCircle, label: "Discussions", path: "/discussions" },
   { icon: Users, label: "Clubs", path: "/clubs" },
   { icon: Calendar, label: "Events", path: "/events" },
+  { icon: Briefcase, label: "Careers", path: "/careers" },
   { icon: GraduationCap, label: "Alumni", path: "/alumni" },
 ];
 

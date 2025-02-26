@@ -16,6 +16,7 @@ import AdminPanel from "./pages/admin/AdminPanel";
 import Announcements from "./pages/announcements/Announcements";
 import Chatrooms from "./pages/chatrooms/Chatrooms";
 import Timetable from "./pages/timetable/Timetable";
+import Careers from "./pages/Careers";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
           <Route path="/discussions" element={<Discussions />} />
           <Route path="/clubs" element={<Clubs />} />
           <Route path="/events" element={<Events />} />
+          <Route path="/careers" element={<Careers />} />
           <Route path="/alumni" element={<Alumni />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
