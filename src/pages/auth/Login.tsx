@@ -21,8 +21,9 @@ const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    e.stopPropagation(); // Add this to ensure event doesn't bubble up
     setIsLoading(true);
 
     const user = dummyUsers.find(
@@ -42,7 +43,7 @@ const Login = () => {
         description: `Welcome back, ${user.role}!`,
       });
 
-      // Navigate based on role
+      // Navigate based on role with state to prevent page reload
       const route = user.role === "admin" 
         ? "/admin"
         : user.role === "teacher"
@@ -52,15 +53,20 @@ const Login = () => {
         : "/discussions";
 
       setIsLoading(false);
-      navigate(route, { replace: true });
-    } else {
-      toast({
-        title: "Login failed",
-        description: "Invalid email or password. Try again.",
-        variant: "destructive",
+      // Use replace and state to prevent page reload
+      navigate(route, { 
+        replace: true,
+        state: { from: "login" }
       });
-      setIsLoading(false);
+      return;
     }
+
+    toast({
+      title: "Login failed",
+      description: "Invalid email or password. Try again.",
+      variant: "destructive",
+    });
+    setIsLoading(false);
   };
 
   return (
@@ -71,7 +77,7 @@ const Login = () => {
             <h1 className="text-2xl font-bold">Welcome Back</h1>
             <p className="text-sm text-gray-600">Sign in to your account</p>
           </div>
-          <form className="space-y-4" onSubmit={handleLogin}>
+          <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-1" htmlFor="email">
                 Email
@@ -135,4 +141,3 @@ const Login = () => {
 };
 
 export default Login;
-
