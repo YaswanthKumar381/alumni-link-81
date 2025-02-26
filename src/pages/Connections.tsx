@@ -4,6 +4,7 @@ import MainLayout from "@/components/MainLayout";
 import { User, MessageCircle, UserCheck, UserPlus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { useNavigate } from "react-router-dom";
 
 const connectionsMockData = [
   {
@@ -70,6 +71,7 @@ const Connections = () => {
   const [connections, setConnections] = useState<Connection[]>([]);
   const [filter, setFilter] = useState<"all" | "students" | "alumni">("all");
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // In a real app, we would fetch connections from an API
@@ -90,9 +92,16 @@ const Connections = () => {
   };
 
   const handleMessage = (name: string) => {
+    // Navigate to chatrooms with the specific user's chat
+    navigate("/chatrooms", { 
+      state: { 
+        activeChat: name 
+      }
+    });
+    
     toast({
-      title: "Chat opened",
-      description: `You can now chat with ${name}`,
+      title: "Opening chat",
+      description: `Opening chat with ${name}`,
     });
   };
 
@@ -160,7 +169,7 @@ const Connections = () => {
             filteredConnections.map((connection) => (
               <div
                 key={connection.id}
-                className="bg-white rounded-lg shadow-sm p-6 space-y-4"
+                className="bg-white rounded-lg shadow-sm p-6 space-y-4 hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center gap-4">
                   <div className="bg-primary/10 rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">

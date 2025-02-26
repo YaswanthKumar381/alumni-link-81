@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import MainLayout from "@/components/MainLayout";
 import { Button } from "@/components/ui/button";
@@ -13,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { useLocation } from "react-router-dom";
 
 type Message = {
   id: string;
@@ -152,8 +152,20 @@ const Chatrooms = () => {
   const [newContactName, setNewContactName] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const location = useLocation();
 
-  const activeChat = chats.find((chat) => chat.id === activeChatId);
+  useEffect(() => {
+    // Handle incoming chat navigation
+    const activeChatName = location.state?.activeChat;
+    if (activeChatName) {
+      const chat = chats.find(chat => chat.name === activeChatName);
+      if (chat) {
+        setActiveChatId(chat.id);
+        // Clear the location state to prevent re-opening on refresh
+        window.history.replaceState({}, document.title);
+      }
+    }
+  }, [location.state, chats]);
 
   useEffect(() => {
     if (activeChatId) {
