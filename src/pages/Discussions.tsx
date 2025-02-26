@@ -5,8 +5,20 @@ import { MessageCircle, ThumbsUp, MessageSquare, Share2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 
+interface Discussion {
+  id: string;
+  title: string;
+  content: string;
+  category: string;
+  profiles: {
+    username: string;
+  } | null;
+  discussion_replies_count: number;
+  discussion_likes_count: number;
+}
+
 const Discussions = () => {
-  const [discussions, setDiscussions] = useState([]);
+  const [discussions, setDiscussions] = useState<Discussion[]>([]);
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -61,10 +73,23 @@ const Discussions = () => {
 
   const handleLike = async (discussionId: string) => {
     try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        toast({
+          title: "Authentication required",
+          description: "Please login to like discussions",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const { data: existingLike } = await supabase
         .from('discussion_likes')
         .select('id')
-        .match({ discussion_id: discussionId, user_id: supabase.auth.user()?.id })
+        .match({ discussion_id: discussionId, user_id: user.id })
         .single();
 
       if (existingLike) {
@@ -75,7 +100,7 @@ const Discussions = () => {
       } else {
         await supabase
           .from('discussion_likes')
-          .insert({ discussion_id: discussionId, user_id: supabase.auth.user()?.id });
+          .insert({ discussion_id: discussionId, user_id: user.id });
       }
 
       fetchDiscussions();
@@ -107,7 +132,7 @@ const Discussions = () => {
           </div>
         ) : (
           <div className="grid gap-4">
-            {discussions.map((discussion: any) => (
+            {discussions.map((discussion) => (
               <div
                 key={discussion.id}
                 className="rounded-lg border bg-white p-6 shadow-sm hover:shadow-md transition-shadow"

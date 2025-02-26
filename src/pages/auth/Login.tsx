@@ -33,16 +33,19 @@ const Login = () => {
           .eq('id', user.id)
           .single();
 
-        localStorage.setItem("authUser", JSON.stringify({
+        const defaultName = email.split('@')[0];
+        const userData = {
           email: user.email,
           role: profile?.role || 'student',
-          name: profile?.full_name || email.split('@')[0],
+          name: profile?.full_name || defaultName,
           isAuthenticated: true
-        }));
+        };
+
+        localStorage.setItem("authUser", JSON.stringify(userData));
 
         toast({
           title: "Login successful",
-          description: `Welcome back, ${profile?.username || email.split('@')[0]}!`,
+          description: `Welcome back, ${profile?.username || defaultName}!`,
         });
 
         const route = profile?.role === "admin" 
